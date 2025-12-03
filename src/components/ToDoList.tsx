@@ -2,14 +2,15 @@ import { FaList, FaPlus, FaCheckCircle, FaTrash, FaEdit} from "react-icons/fa"
 import { useState, useEffect } from "react";
 
 interface Todo {
-  id: number;           // unique id for each todo
-  text: string;         // the task text
-  completed: boolean;   // completed flag
-  createdAt: string;    // ISO timestamp for sorting / display
+  id: number;   
+  text: string; 
+  completed: boolean;  
+  createdAt: string; 
 }
 
 const LOCALSTORAGE_KEY = "myapp_todos_v1";
 
+// initialize todo from localstorage
 const ToDoList:React.FC = () => {
     const [todos, setTodos] = useState<Todo[]>(() => {
         try {
@@ -21,10 +22,10 @@ const ToDoList:React.FC = () => {
     });
 
     const [newTodoText, setNewTodoText] = useState<string>("");
-
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editingText, setEditingText] = useState<string>("");
 
+// modify localstorage anytime todos change
     useEffect(() => {
         try {
         localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(todos));
@@ -35,10 +36,11 @@ const ToDoList:React.FC = () => {
 
     const generateId = (): number => Date.now() + Math.floor(Math.random() * 1000);
 
+    // Add list item to todos
     const handleAddTodo = (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         const text = newTodoText.trim();
-        if (!text) return; // guard: don't add empty todos
+        if (!text) return;
 
         const todo: Todo = {
         id: generateId(),
@@ -49,9 +51,10 @@ const ToDoList:React.FC = () => {
 
     // Add to front so new items appear at top
         setTodos((prev) => [todo, ...prev]);
-        setNewTodoText(""); // clear input
+        setNewTodoText("");
     };
 
+    //  handle edit task
     const startEditing = (todo: Todo) => {
         setEditingId(todo.id);
         setEditingText(todo.text);
@@ -68,7 +71,6 @@ const ToDoList:React.FC = () => {
 
     const text = editingText.trim();
         if (!text) {
-        // If the user empties it, you can either ignore or delete. We'll ignore.
         return;
         }
 
@@ -79,8 +81,8 @@ const ToDoList:React.FC = () => {
         cancelEditing();
     };
 
+    // handle delete task
      const deleteTodo = (id: number) => {
-    // confirm is optional; for production you may want a nicer modal
         if (!window.confirm("Delete this task?")) return;
         setTodos((prev) => prev.filter((t) => t.id !== id));
     };
