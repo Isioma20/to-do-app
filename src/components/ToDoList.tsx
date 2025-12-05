@@ -1,7 +1,7 @@
 import { FaList, FaPlus, FaCheckCircle, FaTrash, FaEdit} from "react-icons/fa"
 import { useState, useEffect } from "react";
 
-interface Todo {
+type Todo = {
   id: number;   
   text: string; 
   completed: boolean;  
@@ -88,9 +88,12 @@ const ToDoList:React.FC = () => {
     };
 
     const toggleCompleted = (id: number) => {
-        setTodos((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
+        setTodos((prev) => {
+        const updated = prev.map((t) =>
+        t.id === id ? { ...t, completed: !t.completed } : t
         );
+        return updated.sort((a, b) => Number(a.completed) - Number(b.completed));
+        })
     };
 
 
@@ -120,12 +123,11 @@ const ToDoList:React.FC = () => {
             return (
               <li
                 key={todo.id}
-                className="flex items-start gap-3 p-3 rounded-lg border border-slate-100"
-              >
+                className="flex items-center gap-3 p-3 rounded-lg border border-slate-100 break-all transition-all duration-300 ease-out">
                 <button
                   onClick={() => !isEditing && toggleCompleted(todo.id)}
                   disabled={isEditing}
-                  className={`w-8 h-8 rounded-full flex items-center justify-center border ${
+                  className={`w-8 h-8 rounded-full flex items-center self-start justify-center border shrink-0 ${
                     todo.completed ? "bg-pink-500 text-white border-pink-500" : "border-slate-200"
                   }`}>
                   {todo.completed ? <FaCheckCircle /> : null}
@@ -133,7 +135,7 @@ const ToDoList:React.FC = () => {
 
                 <div className="flex-1">
                   {isEditing ? (
-                    <form onSubmit={submitEdit} className="flex gap-2">
+                    <form onSubmit={submitEdit} className="flex flex-wrap gap-2">
                       <input
                         value={editingText}
                         onChange={(e) => setEditingText(e.target.value)}
