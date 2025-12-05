@@ -157,7 +157,7 @@ const ToDoList:React.FC = () => {
                 </div>
 
                 {!isEditing && (
-                  <div className="flex gap-3">
+                  <div className="flex gap-3 self-start">
                     <button
                       onClick={() => startEditing(todo)}
                       className="text-slate-500 hover:text-pink-500"
